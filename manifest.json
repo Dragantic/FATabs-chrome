@@ -1,13 +1,13 @@
 {
 	"manifest_version": 3,
 	"name": "FATabs",
-	"version": "1.11",
+	"version": "1.18",
 	"description": "Batch-download images from open FurAffinity view tabs",
 	"homepage_url": "https://github.com/dragantic/fatabs-chrome",
 
 	"icons": {
-		"32": "icons/32.png",
-		"48": "icons/48.png"
+		"32": "images/icon-32.png",
+		"48": "images/icon-48.png"
 	},
 	"background": {
 		"service_worker": "js/background.js"
@@ -16,8 +16,17 @@
 		"browser_style": true,
 		"default_title": "FATabs",
 		"default_popup": "popup.html",
-		"default_icon": "icons/32.png"
+		"default_icon": "images/icon-32.png"
 	},
+	"web_accessible_resources": [{
+		"resources": ["images/download.png"],
+		"matches": ["<all_urls>"]
+	 }],
+	"content_scripts": [{
+		"matches": ["<all_urls>"],
+		"js": ["js/content.js"],
+		"css": ["content.css"]
+	}],
 	"permissions": [
 		"tabs",
 		"downloads",
