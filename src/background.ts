@@ -46,10 +46,10 @@ function downloadImages(index: number | undefined = undefined) {
 			}
 			const id: number = tab.id
 			chrome.scripting.executeScript({ target: {tabId: id}, func: () => {
-				return (<HTMLAnchorElement>document
-					.getElementsByClassName('download')[0].firstChild).href
+				const a = document.getElementsByClassName('download')[0].firstChild
+				return (a && a instanceof HTMLAnchorElement) ? a.href : undefined
 			}}).then( (img) => {
-				if (img.length > 0) {
+				if (img.length > 0 && img[0].result) {
 					chrome.downloads.download({ url: img[0].result, saveAs: false })
 					if (i === last) {
 						chrome.tabs.query({ windowType: 'normal' })
@@ -74,13 +74,13 @@ function downloadImages(index: number | undefined = undefined) {
 	running = false
 }
 
-function downloadImage(src: string, filename: string | undefined) {
-	chrome.downloads.download({ url: src, filename: filename, saveAs: false })
-}
-
 chrome.runtime.onMessage.addListener( (request) => {
 	switch (request.type) {
-	case 'l':
+	case 'btn':
+		chrome.downloads.download(
+			{ url: request.src, filename: request.filename, saveAs: false })
+		break
+	case 'left':
 		chrome.tabs.query({ active: true, currentWindow: true })
 		.then( (tab) => {
 			if (tab[0].index > 0) {
@@ -88,14 +88,13 @@ chrome.runtime.onMessage.addListener( (request) => {
 			}
 		})
 		break
-	case 'r':
+	case 'right':
 		chrome.tabs.query({ active: true, currentWindow: true })
-		.then( (tab) => { downloadImages(tab[0].index) })
+		.then( (tab) => {
+			downloadImages(tab[0].index)
+		})
 		break
-	case 's':
-		downloadImage(request.src, request.filename)
-		break
-	case 'c':
+	case 'cancel':
 		cancelDownload()
 		break
 	default:

@@ -1,7 +1,8 @@
 {
 	"manifest_version": 3,
 	"name": "FATabs",
-	"version": "1.19",
+	"version": "1.33",
+	"author": "Dragantic",
 	"description": "Batch-download images from open FurAffinity view tabs",
 	"homepage_url": "https://github.com/dragantic/fatabs-chrome",
 
@@ -22,11 +23,30 @@
 		"resources": ["images/download.png"],
 		"matches": ["<all_urls>"]
 	 }],
-	"content_scripts": [{
-		"matches": ["<all_urls>"],
-		"js": ["js/content.js"],
-		"css": ["content.css"]
-	}],
+	"content_scripts": [
+		{
+			"matches": ["*://*.furaffinity.net/*"],
+			"exclude_matches": ["*://*.furaffinity.net/view/*"],
+			"js": ["js/content_fa.js"],
+			"css": ["content.css"]
+		},
+		{
+			"matches": ["*://derpibooru.org/*", "*://furbooru.org/*"],
+			"exclude_matches": ["*://derpibooru.org/images/*", "*://furbooru.org/images/*"],
+			"js": ["js/content_derp.js"],
+			"css": ["content.css"]
+		},
+		{
+			"matches": ["*://twitter.com/*"],
+			"js": ["js/content_twit.js"],
+			"css": ["content.css"]
+		},
+		{
+			"matches": ["*://*.deviantart.com/*"],
+			"js": ["js/content_da.js"],
+			"css": ["content.css"]
+		}
+	],
 	"permissions": [
 		"tabs",
 		"downloads",
